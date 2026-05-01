@@ -10,7 +10,7 @@ export default function SitesPage() {
   useEffect(() => {
     api()
       .get('/sites')
-      .then(res => setSites(res.data))
+      .then((res) => setSites(res.data))
       .catch(() => {});
   }, []);
 
@@ -28,24 +28,29 @@ export default function SitesPage() {
         <input
           placeholder="Site name"
           value={form.name}
-          onChange={e => setForm({ ...form, name: e.target.value })}
-        /><br />
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
+        <br />
         <input
           placeholder="Address"
           value={form.address}
-          onChange={e => setForm({ ...form, address: e.target.value })}
-        /><br />
+          onChange={(e) => setForm({ ...form, address: e.target.value })}
+        />
+        <br />
         <input
           placeholder="Project type"
           value={form.project_type}
-          onChange={e => setForm({ ...form, project_type: e.target.value })}
-        /><br />
+          onChange={(e) => setForm({ ...form, project_type: e.target.value })}
+        />
+        <br />
         <button type="submit">Add Site</button>
       </form>
 
       <ul>
-        {sites.map(s =>=> (
-          >{s.name} – {s.project_type}</li>
+        {sites.map((s) => (
+          <li key={s.id ?? s.name}>
+            {s.name} – {s.project_type}
+          </li>
         ))}
       </ul>
     </div>

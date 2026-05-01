@@ -7,10 +7,13 @@ export default function DashboardPage() {
     <div style={{ display: 'flex' }}>
       <aside style={{ width: 200, borderRight: '1px solid #ccc', padding: 16 }}>
         <h3>Menu</h3>
-        <u
         <ul>
-          ><Link href="/sites">Sites</Link></l/li>
-          ><Link href="/activities">Activities</Link></li>
+          <li>
+            <Link href="/sites">Sites</Link>
+          </li>
+          <li>
+            <Link href="/activities">Activities</Link>
+          </li>
         </ul>
       </aside>
       <main style={{ flex: 1, padding: 16 }}>
