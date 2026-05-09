@@ -35,6 +35,16 @@ export default function ActivitiesPage() {
     });
   }
 
+  function handleDownloadPdf(activityId) {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!baseUrl) {
+      console.error('NEXT_PUBLIC_API_URL is not defined');
+      return;
+    }
+    const url = `${baseUrl}/activities/${activityId}/print`;
+    window.open(url, '_blank');
+  }
+
   return (
     <div style={{ padding: 16 }}>
       <h1>Activities</h1>
@@ -80,10 +90,17 @@ export default function ActivitiesPage() {
 
       <ul>
         {activities.map(a => (
-          <li key={a.id}>
+          >
             <Link href={`/activities/${a.id}`}>
               {a.title} – {a.site_name} – {a.status}
             </Link>
+            {' '}
+            <button
+              type="button"
+              onClick={() => handleDownloadPdf(a.id)}
+            >
+              Download PDF
+            </button>
           </li>
         ))}
       </ul>
