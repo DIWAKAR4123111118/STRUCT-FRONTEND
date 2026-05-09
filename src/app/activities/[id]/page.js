@@ -18,9 +18,11 @@ export default function ActivityDetailPage() {
 
   useEffect(() => {
     if (!id) return;
-    api().get(`/activities/${id}`).then(res => {
-      setData(res.data);
-    });
+    api()
+      .get(`/activities/${id}`)
+      .then(res => {
+        setData(res.data);
+      });
   }, [id]);
 
   async function markDone(e) {
@@ -42,6 +44,50 @@ export default function ActivityDetailPage() {
     });
     const res = await api().get(`/activities/${id}`);
     setData(res.data);
+  }
+
+  async function handleDownloadPdf(activityId) {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!baseUrl) {
+      console.error('NEXT_PUBLIC_API_URL is not defined');
+      return;
+    }
+
+    const token =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('token')
+        : null;
+
+    if (!token) {
+      console.error('No token in localStorage');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${baseUrl}/activities/${activityId}/print`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        console.error('Failed to download PDF', res.status);
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `activity-${activityId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error downloading PDF', err);
+    }
   }
 
   if (!data) return <div>Loading...</div>;
@@ -130,12 +176,8 @@ export default function ActivityDetailPage() {
       )}
 
       <button
-        onClick={() =>
-          window.open(
-            `${process.env.NEXT_PUBLIC_API_URL}/activities/${id}/print`,
-            '_blank',
-          )
-        }
+        type="button"
+        onClick={() => handleDownloadPdf(id)}
       >
         Download / Print PDF
       </button>

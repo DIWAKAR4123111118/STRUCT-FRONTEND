@@ -35,14 +35,48 @@ export default function ActivitiesPage() {
     });
   }
 
-  function handleDownloadPdf(activityId) {
+  async function handleDownloadPdf(activityId) {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
     if (!baseUrl) {
       console.error('NEXT_PUBLIC_API_URL is not defined');
       return;
     }
-    const url = `${baseUrl}/activities/${activityId}/print`;
-    window.open(url, '_blank');
+
+    const token =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('token')
+        : null;
+
+    if (!token) {
+      console.error('No token in localStorage');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${baseUrl}/activities/${activityId}/print`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        console.error('Failed to download PDF', res.status);
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `activity-${activityId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error downloading PDF', err);
+    }
   }
 
   return (
