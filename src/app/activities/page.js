@@ -90,7 +90,7 @@ export default function ActivitiesPage() {
 
       <ul>
         {activities.map(a => (
-          >
+          <li key={a.id}>
             <Link href={`/activities/${a.id}`}>
               {a.title} – {a.site_name} – {a.status}
             </Link>
